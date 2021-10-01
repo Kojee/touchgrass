@@ -105,8 +105,8 @@
                 var object = movedStems[i].stem;
                 var newPos = object.geometry.getAttribute('position');
                 var realFrame = movedStems[i].currentFrame / animationSpeedFactor;
-                newPos.array[15] += frames[realFrame][3];
-                newPos.array[0] += frames[realFrame][3];
+                newPos.array[15] += frames[realFrame][3]*movedStems[i].verse;
+                newPos.array[0] += frames[realFrame][3]*movedStems[i].verse;
 
                 object.geometry.attributes.position = newPos;
                 object.geometry.attributes.position.needsUpdate = true;
@@ -133,15 +133,14 @@
                 
                 newPos.array[15] = newPos.array[15] + frames[0][3];
                 newPos.array[0] = newPos.array[0] + frames[0][3];
-
+                movedStems.push({stem: object, framesToLive: frames.length, currentFrame: 1, verse: 1});
               }
               else{
                 newPos.array[15] = newPos.array[15] - frames[0][3];
                 newPos.array[0] = newPos.array[0] - frames[0][3];
-
+                movedStems.push({stem: object, framesToLive: frames.length, currentFrame: 1, verse: -1});
               }
 
-              movedStems.push({stem: object, framesToLive: frames.length, currentFrame: 1});
               object.geometry.attributes.position = newPos;
               object.geometry.attributes.position.needsUpdate = true;
             }
