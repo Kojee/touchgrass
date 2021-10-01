@@ -56,7 +56,7 @@
             0, 0,  1.0
           ] )
         ];
-      console.log(frames);
+        
       const scene = new THREE.Scene();
       const raycaster = new THREE.Raycaster();
       const mouse = new THREE.Vector2();
@@ -69,21 +69,17 @@
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.BasicShadowMap;
       const light = new THREE.DirectionalLight( 0xffffff, 1, 100 );
-      light.position.set( 0, -1, 2); //default; light shining from top
-      light.castShadow = true; // default false
+      light.position.set( 0, -1, 2);
+      light.castShadow = true; 
       scene.add( light );
-      //Set up shadow properties for the light
-      light.shadow.mapSize.width = 512; // default
-      light.shadow.mapSize.height = 512; // default
-      light.shadow.camera.near = 1; // default
-      light.shadow.camera.far = 500; // default
+      light.shadow.mapSize.width = 512; 
+      light.shadow.mapSize.height = 512;
+      light.shadow.camera.near = 1;
+      light.shadow.camera.far = 500;
       renderer.setSize(window.innerWidth, window.innerHeight);
       scene.background = new THREE.Color( 0xBC7746 );
       document.addEventListener('mousemove', onDocumentMouseMove, false); 
       document.body.appendChild(renderer.domElement);
-      
-
-      
 
       const planeGeometry = new THREE.PlaneGeometry( 40, 20, 32, 32 );
       const planeMaterial = new THREE.MeshStandardMaterial( { color: 0xBC7746 } )
@@ -92,8 +88,9 @@
       addGrass();
       scene.add( plane );
       animate();
-      function animate() {	
 
+
+      function animate() {
         requestAnimationFrame(animate);        
         render();
       }
@@ -124,20 +121,19 @@
             
             var object = intersects[ i ].object;
             if(object.geometry.attributes.position.needsUpdate){
-              console.log("Is already moving");
               continue;
             }
             var newPos = object.geometry.getAttribute('position');
             if(newPos.array.length === 18){
               if(mouse.x > oldMousePosition.x){
                 
-                newPos.array[15] = newPos.array[15] + frames[0][3];
-                newPos.array[0] = newPos.array[0] + frames[0][3];
+                newPos.array[15] += frames[0][3];
+                newPos.array[0]+= frames[0][3];
                 movedStems.push({stem: object, framesToLive: frames.length, currentFrame: 1, verse: 1});
               }
               else{
-                newPos.array[15] = newPos.array[15] - frames[0][3];
-                newPos.array[0] = newPos.array[0] - frames[0][3];
+                newPos.array[15] -= frames[0][3];
+                newPos.array[0] -= frames[0][3];
                 movedStems.push({stem: object, framesToLive: frames.length, currentFrame: 1, verse: -1});
               }
 
@@ -177,7 +173,6 @@
               bevelEnabled: false
             };
 
-          console.log("stemx " + stemX + " stemy " + stemY + " stemHeight " + stemHeight);
           const vertices = new Float32Array( [
             stemX,  stemY,  0,
             stemX - 0.02,  stemY + stemHeight,  0.15,
@@ -188,7 +183,6 @@
           console.log(triangle);
           triangle.getAttribute('position').array[2] = 0.15;
           triangle.getAttribute('position').array[17] = 0.15;
-          //triangle.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
           let material = new THREE.MeshBasicMaterial({ color: weedPalette[Math.floor(Math.random()*weedPalette.length)]});
           var mesh = new THREE.Mesh(triangle, material);
           mesh.castShadow = true;
