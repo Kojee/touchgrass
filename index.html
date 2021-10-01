@@ -12,8 +12,9 @@
   <body>
     <script src="js/three.js"></script>
     <script>
-      const minStems = 500;
-      const maxStemsOffset = 500;
+      var lastMovedStem;
+      const minStems = 1000;
+      const maxStemsOffset = 250;
       var oldMousePosition = {x: 0, y: 0};
       var movedStems = [];      
       const weedPalette = [0x55952B, 0x37621C, 0x61AE30, 0x76D43A, 0x8BFA44];
@@ -114,40 +115,43 @@
             }
           }
 
-        raycaster.setFromCamera( mouse, camera );
-        const intersects = raycaster.intersectObjects( scene.children );
-        if(intersects.length > 0)
-          for ( let i = 0; i < intersects.length; i ++ ) {
-            
-            var object = intersects[ i ].object;
-            if(object.geometry.attributes.position.needsUpdate){
-              continue;
-            }
-            var newPos = object.geometry.getAttribute('position');
-            if(newPos.array.length === 18){
-              if(mouse.x > oldMousePosition.x){
-                
-                newPos.array[15] += frames[0][3];
-                newPos.array[0]+= frames[0][3];
-                movedStems.push({stem: object, framesToLive: frames.length, currentFrame: 1, verse: 1});
+        if(mouse.x != oldMousePosition.x){
+          console.log(mouse.x + " " + oldMousePosition.x);
+          raycaster.setFromCamera( mouse, camera );
+          const intersects = raycaster.intersectObjects( scene.children );
+          if(intersects.length > 0){
+            for ( let i = 0; i < intersects.length; i ++ ) {
+              
+              var object = intersects[ i ].object;
+              if(object.geometry.attributes.position.needsUpdate){
+                continue;
               }
-              else{
-                newPos.array[15] -= frames[0][3];
-                newPos.array[0] -= frames[0][3];
-                movedStems.push({stem: object, framesToLive: frames.length, currentFrame: 1, verse: -1});
-              }
+              var newPos = object.geometry.getAttribute('position');
+              if(newPos.array.length === 18){
+                if(mouse.x > oldMousePosition.x){
+                  
+                  newPos.array[15] += frames[0][3];
+                  newPos.array[0]+= frames[0][3];
+                  movedStems.push({stem: object, framesToLive: frames.length, currentFrame: 1, verse: 1});
+                }
+                else{
+                  newPos.array[15] -= frames[0][3];
+                  newPos.array[0] -= frames[0][3];
+                  movedStems.push({stem: object, framesToLive: frames.length, currentFrame: 1, verse: -1});
+                }
 
-              object.geometry.attributes.position = newPos;
-              object.geometry.attributes.position.needsUpdate = true;
+                object.geometry.attributes.position = newPos;
+                object.geometry.attributes.position.needsUpdate = true;
+              }
+              
             }
-            
+            oldMousePosition = {x: mouse.x, y: mouse.y};
           }
+        }
         renderer.render(scene, camera);
       }
 
       function onDocumentMouseMove(event) {
-        
-        oldMousePosition = {x: mouse.x, y: mouse.y};
         mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
         mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
       }
