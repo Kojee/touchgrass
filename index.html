@@ -117,7 +117,6 @@
           }
 
         if(mouse.x != oldMousePosition.x){
-          console.log(mouse.x + " " + oldMousePosition.x);
           raycaster.setFromCamera( mouse, camera );
           const intersects = raycaster.intersectObjects( scene.children );
           if(intersects.length > 0){
@@ -159,7 +158,7 @@
 
       function onTouchMove(event){
         mouse.x = (event.touches[0].clientX / window.innerWidth ) * 2 - 1;
-        mouse.y = (event.touches[0].clientY / window.innerHeight ) * 2 + 1;
+        mouse.y = - (event.touches[0].clientY / window.innerHeight ) * 2 + 1;
 
       }
 
@@ -191,7 +190,6 @@
           ] );
 
           const triangle = new THREE.ExtrudeGeometry( shape, extrudeSettings );
-          console.log(triangle);
           triangle.getAttribute('position').array[2] = 0.15;
           triangle.getAttribute('position').array[17] = 0.15;
           let material = new THREE.MeshBasicMaterial({ color: weedPalette[Math.floor(Math.random()*weedPalette.length)]});
